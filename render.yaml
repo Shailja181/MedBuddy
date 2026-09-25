@@ -3,8 +3,8 @@ services:
     name: medbuddy-app
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    buildCommand: pip install --no-cache-dir -r requirements.txt
+    startCommand: gunicorn --timeout 120 app:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.0
