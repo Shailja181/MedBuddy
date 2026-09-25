@@ -1,0 +1,17 @@
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-Cors==4.0.1
+Flask-Bcrypt==1.0.1
+Flask-Login==0.6.3
+opencv-python-headless==4.9.0.80
+numpy==1.26.4
+easyocr==1.7.1
+Pillow==10.3.0
+Werkzeug==3.0.3
+flask
+flask-sqlalchemy
+werkzeug
+anthropic
+easyocr
+torch
+gunicorn==22.0.0
