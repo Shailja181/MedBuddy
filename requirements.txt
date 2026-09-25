@@ -13,5 +13,7 @@ flask-sqlalchemy
 werkzeug
 anthropic
 easyocr
+python-dotenv
+--extra-index-url https://download.pytorch.org/whl/cpu
 torch
 gunicorn==22.0.0
