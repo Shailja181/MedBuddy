@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Medicines · MedBuddy{% endblock %}
+{% block content %}
+
+<header class="page-head">
+    <div>
+        <h1>Medicines</h1>
+        <p class="page-sub">Track active prescriptions and get automatic conflict alerts</p>
+    </div>
+    <button class="btn primary" onclick="openMedModal()">+ Add Medicine</button>
+</header>
+
+<section id="conflict-banner" class="conflict-banner hidden"></section>
+<section id="med-list" class="card-grid"></section>
+
+<div id="med-modal" class="modal hidden">
+    <div class="modal-card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+            <div style="width:44px;height:44px;background:linear-gradient(135deg,rgba(16,185,129,0.25),rgba(110,231,183,0.1));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px">💊</div>
+            <h2 id="med-modal-title" style="margin:0">Add Medicine</h2>
+        </div>
+        <p class="muted" style="font-size:13px;margin-bottom:10px">Fill in what you know — we'll check for conflicts automatically.</p>
+        <input id="m-name" placeholder="Name (e.g. Paracetamol)">
+        <input id="m-dosage" placeholder="Dosage (e.g. 500 mg)">
+        <input id="m-frequency" placeholder="Frequency (e.g. bd, 2 times/day, tds)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <label>Start date<input id="m-start" type="date"></label>
+            <label>End date<input id="m-end" type="date"></label>
+        </div>
+        <input id="m-purpose" placeholder="Purpose (e.g. Fever)">
+        <textarea id="m-notes" placeholder="Notes (optional)"></textarea>
+        <div class="modal-actions">
+            <button class="btn" onclick="closeMedModal()">Cancel</button>
+            <button class="btn primary" onclick="saveMed()">Save</button>
+        </div>
+    </div>
+</div>
+
+<p class="disclaimer"><span class="pulse-dot"></span>Conflict detection uses drug family + allergy cross-checking. Always verify with your doctor.</p>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/medicines.js') }}"></script>
+{% endblock %}

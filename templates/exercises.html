@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Exercises · MedBuddy{% endblock %}
+{% block content %}
+
+<header class="page-head">
+    <div>
+        <h1>Yoga & Exercises</h1>
+        <p class="page-sub">Practice with camera-guided posture feedback</p>
+    </div>
+</header>
+
+<div class="filter-bar" id="filter-bar">
+    <button class="filter-chip active" data-cat="">All</button>
+    <button class="filter-chip" data-cat="Yoga">🧘 Yoga</button>
+    <button class="filter-chip" data-cat="Stretching">🤸 Stretching</button>
+    <button class="filter-chip" data-cat="Strength">💪 Strength</button>
+    <button class="filter-chip" data-cat="Breathing">🫁 Breathing</button>
+    <button class="filter-chip" data-cat="Relaxation">😌 Relaxation</button>
+    <button class="filter-chip" data-cat="Mobility">🔄 Mobility</button>
+</div>
+
+<section id="exercise-list" class="card-grid"></section>
+
+<div id="e-modal" class="modal hidden">
+    <div class="modal-card" id="e-modal-body"></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/exercises.js') }}"></script>
+{% endblock %}

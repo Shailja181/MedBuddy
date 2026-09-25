@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ pose.name }} · MedBuddy{% endblock %}
+{% block content %}
+
+<header class="page-head">
+    <div>
+        <h1>{{ pose.name }}</h1>
+        <p class="page-sub">{{ pose.sanskrit }} · Hold {{ pose.hold_seconds }}s · {{ pose.difficulty }}</p>
+    </div>
+    <a class="btn" href="{{ url_for('yoga_page') }}">← Back</a>
+</header>
+
+<div class="yoga-layout">
+    <section class="glass-card camera-panel">
+        <div class="camera-wrap">
+            <video id="cam" autoplay muted playsinline></video>
+            <canvas id="overlay"></canvas>
+            <div class="camera-loading" id="cam-loading">
+                <span class="pulse-dot"></span>Loading pose detection model…
+            </div>
+        </div>
+        <div class="camera-controls">
+            <button class="btn primary" id="start-btn" onclick="startPractice()">🎥 Start Practice</button>
+            <button class="btn" id="tts-btn" onclick="toggleTTS()">🔊 Voice On</button>
+            <button class="btn" id="mic-btn" onclick="toggleMic()">🎤 Listen</button>
+        </div>
+    </section>
+
+    <section class="glass-card feedback-panel">
+        <div class="pose-header">
+            <div class="pose-timer" id="timer">{{ pose.hold_seconds }}s</div>
+            <div class="pose-accuracy">
+                <div class="accuracy-ring">
+                    <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" class="ring-bg"/><circle cx="50" cy="50" r="42" class="ring-fill" id="ring"/></svg>
+                    <div class="accuracy-num" id="accuracy">0%</div>
+                </div>
+                <div class="muted" style="font-size:12px;text-align:center">Alignment score</div>
+            </div>
+        </div>
+
+        <h4 style="margin:16px 0 8px;color:#fff">📋 Instructions</h4>
+        <ol id="instructions" style="padding-left:20px;line-height:1.8;font-size:13px">
+            {% for i in pose.instructions %}<li>{{ i }}</li>{% endfor %}
+        </ol>
+
+        <h4 style="margin:20px 0 8px;color:#fff">🎯 Live Feedback</h4>
+        <div id="feedback-list" class="feedback-list"></div>
+    </section>
+</div>
+
+<div id="completion-modal" class="modal hidden">
+    <div class="modal-card" style="text-align:center">
+        <div style="font-size:60px;margin-bottom:12px">🎉</div>
+        <h2>Session Complete!</h2>
+        <p style="margin:12px 0" id="completion-summary"></p>
+        <div class="modal-actions" style="justify-content:center">
+            <a href="{{ url_for('yoga_page') }}" class="btn">More Poses</a>
+            <button class="btn primary" onclick="restartPractice()">🔁 Practice Again</button>
+        </div>
+    </div>
+</div>
+
+<p class="disclaimer"><span class="pulse-dot"></span>Stop if you feel any pain. Camera runs locally — no video is sent to any server.</p>
+
+<!-- MediaPipe Pose from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/[email protected]/pose.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/[email protected]/camera_utils.js" crossorigin="anonymous"></script>
+
+<script>
+const POSE_DATA = {{ pose | tojson }};
+const POSE_KEY = "{{ pose_key }}";
+</script>
+<script src="{{ url_for('static', filename='js/yoga_practice.js') }}"></script>
+{% endblock %}

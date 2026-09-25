@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · MedBuddy{% endblock %}
+{% block content %}
+
+<section class="welcome-card">
+    <h2>Good day, {{ user.name }} <span class="wave-hand">👋</span></h2>
+    <p>How can MedBuddy help you today?</p>
+    <div style="display:flex;gap:14px;margin-top:18px;flex-wrap:wrap">
+        <div class="mini-metric"><span class="pulse-dot"></span>Health status: Active</div>
+        <div class="mini-metric">📅 {{ user.created_at.strftime('%b %Y') if user.created_at else 'Member' }}</div>
+    </div>
+</section>
+
+<section class="stat-grid">
+    <a href="{{ url_for('medicines_page') }}" class="stat-card link">
+        <div class="icon">💊</div>
+        <span class="label">Active Medicines</span>
+        <span class="value" data-count="{{ stats.medicines }}">0</span>
+        <span class="trend">Track & manage →</span>
+    </a>
+    <a href="{{ url_for('allergies_page') }}" class="stat-card link">
+        <div class="icon" style="background:rgba(245,158,11,0.15);color:#fbbf24">⚠</div>
+        <span class="label">Known Allergies</span>
+        <span class="value" data-count="{{ stats.allergies }}">0</span>
+        <span class="trend">Manage list →</span>
+    </a>
+    <a href="{{ url_for('scanner') }}" class="stat-card link">
+        <div class="icon" style="background:rgba(99,102,241,0.15);color:#a5b4fc">📄</div>
+        <span class="label">Medical Reports</span>
+        <span class="value" data-count="{{ stats.records }}">0</span>
+        <span class="trend">Scan new →</span>
+    </a>
+    <a href="{{ url_for('chart_page') }}" class="stat-card link">
+        <div class="icon" style="background:rgba(239,68,68,0.15);color:#fca5a5">📈</div>
+        <span class="label">Health Events</span>
+        <span class="value" data-count="{{ stats.events }}">0</span>
+        <span class="trend">View timeline →</span>
+    </a>
+</section>
+
+<h3>Quick Actions</h3>
+<div class="action-grid">
+    <a class="action-card featured" href="{{ url_for('scanner') }}">
+        <div class="ac-icon">📄</div>
+        <div class="ac-title">Scan Document</div>
+        <div class="ac-sub">Extract prescription with AI OCR</div>
+    </a>
+    <a class="action-card" href="{{ url_for('medicines_page') }}">
+        <div class="ac-icon">💊</div>
+        <div class="ac-title">Add Medicine</div>
+        <div class="ac-sub">Track dose & schedule</div>
+    </a>
+    <a class="action-card" href="{{ url_for('allergies_page') }}">
+        <div class="ac-icon">⚠</div>
+        <div class="ac-title">Log Allergy</div>
+        <div class="ac-sub">Trigger safety alerts</div>
+    </a>
+    <a class="action-card" href="{{ url_for('schedule_page') }}">
+        <div class="ac-icon">⏰</div>
+        <div class="ac-title">Today's Doses</div>
+        <div class="ac-sub">Your daily schedule</div>
+    </a>
+    <a class="action-card" href="{{ url_for('vitals_page') }}">
+        <div class="ac-icon">📈</div>
+        <div class="ac-title">Log Vital</div>
+        <div class="ac-sub">BP, sugar, weight</div>
+    </a>
+    <a class="action-card" href="{{ url_for('diet_page') }}">
+        <div class="ac-icon">🥗</div>
+        <div class="ac-title">Diet Chart</div>
+        <div class="ac-sub">AI-personalized meals</div>
+    </a>
+    <a class="action-card" href="{{ url_for('exercises_page') }}">
+        <div class="ac-icon">🧘</div>
+        <div class="ac-title">Exercises</div>
+        <div class="ac-sub">Yoga, breathing, more</div>
+    </a>
+    <a class="action-card" href="{{ url_for('ai_page') }}">
+        <div class="ac-icon">🤖</div>
+        <div class="ac-title">Ask MedBuddy AI</div>
+        <div class="ac-sub">Get instant answers</div>
+    </a>
+    <a class="action-card highlight" href="/api/report/pdf" target="_blank">
+        <div class="ac-icon">📥</div>
+        <div class="ac-title">Download Report</div>
+        <div class="ac-sub">Full PDF health export</div>
+    </a>
+</div>
+
+<p class="disclaimer"><span class="pulse-dot"></span>MedBuddy provides informational decision support and does not replace professional medical advice.</p>
+
+<script>
+document.querySelectorAll(".stat-card .value").forEach(el => {
+    const target = parseInt(el.dataset.count) || 0;
+    if (target === 0) { el.textContent = "0"; return; }
+    let current = 0;
+    const step = Math.max(1, Math.ceil(target / 30));
+    const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = current;
+    }, 30);
+});
+</script>
+{% endblock %}

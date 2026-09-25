@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard · MedBuddy{% endblock %}
+{% block content %}
+<header class="page-head">
+    <div>
+        <h1>Admin Dashboard</h1>
+        <p class="page-sub">User activity & system health</p>
+    </div>
+</header>
+
+<div class="stat-grid" id="admin-stats-grid">
+    <div class="stat-card">
+        <div class="stat-val">...</div>
+        <div class="stat-label">Total Users</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-val">...</div>
+        <div class="stat-label">Signups this Week</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-val">...</div>
+        <div class="stat-label">Active Today</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-val">...</div>
+        <div class="stat-label">Failed Logins Today</div>
+    </div>
+</div>
+
+<div class="card-grid" style="grid-template-columns: 1fr; margin-top: 24px;">
+    <section class="glass-card">
+        <h3>User Management</h3>
+        <div style="overflow-x:auto;">
+            <table style="width:100%; text-align:left; border-collapse:collapse; margin-top:12px;">
+                <thead>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <th style="padding:8px">Name</th>
+                        <th style="padding:8px">Email</th>
+                        <th style="padding:8px">Age</th>
+                        <th style="padding:8px">Medicines</th>
+                        <th style="padding:8px">Allergies</th>
+                        <th style="padding:8px">Joined</th>
+                        <th style="padding:8px">Last Login</th>
+                    </tr>
+                </thead>
+                <tbody id="users-table-body">
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="glass-card">
+        <h3>Recent Auth Events</h3>
+        <div style="overflow-x:auto;">
+            <table style="width:100%; text-align:left; border-collapse:collapse; margin-top:12px;">
+                <thead>
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <th style="padding:8px">Time</th>
+                        <th style="padding:8px">Email</th>
+                        <th style="padding:8px">Event</th>
+                        <th style="padding:8px">IP Address</th>
+                    </tr>
+                </thead>
+                <tbody id="events-table-body">
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<script>
+async function loadAdminData() {
+    try {
+        const statsRes = await fetch('/api/admin/stats');
+        const stats = await statsRes.json();
+        const statsGrid = document.getElementById('admin-stats-grid');
+        statsGrid.innerHTML = `
+            <div class="stat-card">
+                <div class="stat-val">${stats.total_users}</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val">${stats.signups_this_week}</div>
+                <div class="stat-label">Signups this Week</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val">${stats.active_today}</div>
+                <div class="stat-label">Active Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val">${stats.failed_logins_today}</div>
+                <div class="stat-label">Failed Logins Today</div>
+            </div>
+        `;
+
+        const usersRes = await fetch('/api/admin/users');
+        const users = await usersRes.json();
+        const usersBody = document.getElementById('users-table-body');
+        usersBody.innerHTML = users.map(u => `
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                <td style="padding:8px">${u.name} ${u.is_admin ? '<span class="diet-badge" style="background:#8b5cf6;color:#fff">Admin</span>' : ''}</td>
+                <td style="padding:8px">${u.email}</td>
+                <td style="padding:8px">${u.age || '-'}</td>
+                <td style="padding:8px">${u.medicines_count}</td>
+                <td style="padding:8px">${u.allergies_count}</td>
+                <td style="padding:8px">${new Date(u.joined_date).toLocaleDateString()}</td>
+                <td style="padding:8px">${u.last_login ? new Date(u.last_login).toLocaleString() : 'Never'}</td>
+            </tr>
+        `).join('');
+
+        const eventsRes = await fetch('/api/admin/events');
+        const events = await eventsRes.json();
+        const eventsBody = document.getElementById('events-table-body');
+        
+        function getEventBadge(type) {
+            let bg, color;
+            if (type === 'signup') { bg = 'rgba(16,185,129,0.15)'; color = '#34d399'; }
+            else if (type === 'login_success') { bg = 'rgba(59,130,246,0.15)'; color = '#60a5fa'; }
+            else if (type === 'login_fail') { bg = 'rgba(239,68,68,0.15)'; color = '#f87171'; }
+            else { bg = 'rgba(156,163,175,0.15)'; color = '#9ca3af'; }
+            return `<span class="diet-badge" style="background:${bg};color:${color}">${type}</span>`;
+        }
+        
+        eventsBody.innerHTML = events.map(e => `
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                <td style="padding:8px">${new Date(e.created_at).toLocaleString()}</td>
+                <td style="padding:8px">${e.email}</td>
+                <td style="padding:8px">${getEventBadge(e.event_type)}</td>
+                <td style="padding:8px;font-family:monospace">${e.ip_address || '-'}</td>
+            </tr>
+        `).join('');
+    } catch (err) {
+        console.error('Failed to load admin data:', err);
+    }
+}
+loadAdminData();
+</script>
+{% endblock %}

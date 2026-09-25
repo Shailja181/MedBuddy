@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Vitals · MedBuddy{% endblock %}
+{% block content %}
+
+<header class="page-head">
+    <div>
+        <h1>Vitals Tracker</h1>
+        <p class="page-sub">Track BP, sugar, weight, heart rate — spot trends over time</p>
+    </div>
+    <button class="btn primary" onclick="document.getElementById('v-modal').classList.remove('hidden')">+ Log Vital</button>
+</header>
+
+<section class="card-grid">
+    <div class="glass-card vital-card">
+        <div class="vital-header"><span class="vital-icon" style="color:#fca5a5">🩺</span><h3>Blood Pressure</h3></div>
+        <canvas id="chart-bp"></canvas>
+    </div>
+    <div class="glass-card vital-card">
+        <div class="vital-header"><span class="vital-icon" style="color:#fbbf24">🍬</span><h3>Blood Sugar</h3></div>
+        <canvas id="chart-sugar"></canvas>
+    </div>
+    <div class="glass-card vital-card">
+        <div class="vital-header"><span class="vital-icon" style="color:#a5b4fc">⚖</span><h3>Weight</h3></div>
+        <canvas id="chart-weight"></canvas>
+    </div>
+    <div class="glass-card vital-card">
+        <div class="vital-header"><span class="vital-icon" style="color:#6ee7b7">💗</span><h3>Heart Rate</h3></div>
+        <canvas id="chart-hr"></canvas>
+    </div>
+</section>
+
+<section class="glass-card" style="margin-top:20px">
+    <h3 style="margin-bottom:12px">Recent Entries</h3>
+    <div id="v-list"></div>
+</section>
+
+<div id="v-modal" class="modal hidden">
+    <div class="modal-card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+            <div style="width:44px;height:44px;background:rgba(16,185,129,0.15);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px">📈</div>
+            <h2 style="margin:0">Log a Vital</h2>
+        </div>
+        <select id="v-kind">
+            <option value="bp">🩺 Blood Pressure (mmHg)</option>
+            <option value="sugar">🍬 Blood Sugar (mg/dL)</option>
+            <option value="weight">⚖ Weight (kg)</option>
+            <option value="heart_rate">💗 Heart Rate (bpm)</option>
+            <option value="spo2">🫁 SpO₂ (%)</option>
+        </select>
+        <input id="v-value" placeholder="Value (e.g. 120/80 or 98)">
+        <textarea id="v-notes" placeholder="Notes (optional)"></textarea>
+        <div class="modal-actions">
+            <button class="btn" onclick="document.getElementById('v-modal').classList.add('hidden')">Cancel</button>
+            <button class="btn primary" onclick="saveVital()">Save Entry</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/vitals.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedBuddy | Health Companion</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- BACKGROUND VIDEO -->
+    <video class="background-video" autoplay muted loop playsinline preload="auto">
+        <source src="{{ url_for('static', filename='assets/generate_this_in_video_but_do.mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="video-overlay"></div>
+
+    <main class="page-content">
+
+        <!-- NAVIGATION -->
+        <nav class="navbar">
+            <a href="{{ url_for('index') }}" class="logo">
+                <span class="logo-icon">✚</span>
+                <span>MedBuddy</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+                <a href="{{ url_for('auth') }}">Login / Sign up</a>
+                <a href="{{ url_for('dashboard') }}" class="nav-cta">Dashboard</a>
+            </div>
+        </nav>
+
+        <!-- MAIN HERO -->
+        <section class="hero">
+            <div class="hero-content">
+                <p class="tagline">YOUR PERSONAL HEALTH COMPANION</p>
+
+                <h1>
+                    Smarter health support,
+                    <span>whenever you need it.</span>
+                </h1>
+
+                <p class="hero-description">
+                    MedBuddy helps you organize health information, track
+                    medicines, record allergies, scan medical reports, and get
+                    clear wellness guidance.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="{{ url_for('auth') }}" class="btn btn-primary">
+                        Get Started
+                    </a>
+
+                    <a href="#features" class="btn btn-secondary">
+                        Explore Features
+                    </a>
+                </div>
+
+                <p class="disclaimer">
+                    ⚕ MedBuddy provides educational guidance only. It does not
+                    replace advice from a qualified healthcare professional.
+                </p>
+            </div>
+
+            <aside class="hero-card">
+                <span class="status-dot"></span>
+                <div class="card-icon">❤</div>
+                <h2>Health support made simple</h2>
+                <p>
+                    Track medicines, record allergies, scan reports, and access
+                    your MedBuddy health dashboard in one place.
+                </p>
+                <a href="{{ url_for('auth') }}" class="card-button">
+                    Go to MedBuddy →
+                </a>
+            </aside>
+        </section>
+
+        <!-- FEATURES -->
+        <section id="features" class="features-section">
+            <h2>How MedBuddy can help</h2>
+
+            <div class="features-grid">
+                <article class="feature-card">
+                    <div class="feature-icon">💊</div>
+                    <h3>Medicine tracking</h3>
+                    <p>Store active medicines, dosages, frequency, purpose, and notes in your personal health profile.</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">⚠️</div>
+                    <h3>Safety alerts</h3>
+                    <p>Every medicine you add is checked against your allergies and current medications for known conflicts.</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3>Medical report OCR</h3>
+                    <p>Upload prescriptions or reports — MedBuddy extracts medicines, dosage, and diagnosis automatically.</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Vitals tracker</h3>
+                    <p>Log blood pressure, sugar, weight, and heart rate. See trends on beautiful interactive charts.</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">⏰</div>
+                    <h3>Today's schedule</h3>
+                    <p>Your active medicines mapped into a daily dose timeline with taken / missed / upcoming states.</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">📥</div>
+                    <h3>Health PDF export</h3>
+                    <p>One-click PDF report of your full profile, medicines, allergies, and vitals — ready to share with your doctor.</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">🧘</div>
+                    <h3>Yoga & exercises</h3>
+                    <p>Curated library of yoga poses, breathing exercises, and mobility routines with difficulty and duration.</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>MedBuddy AI</h3>
+                    <p>Ask questions about your medicines, allergies, and general health — grounded in your own health profile.</p>
+                </article>
+
+                <article class="feature-card">
+                    <div class="feature-icon">🗂️</div>
+                    <h3>Health chart</h3>
+                    <p>A single timeline of medicines, reports, and health events — your medical history at a glance.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS -->
+        <section id="how" class="about-section">
+            <h2>How MedBuddy works</h2>
+            <div class="steps">
+                <div class="step"><span>1</span><h4>Upload / Scan</h4><p>Add a medical document, prescription, or report.</p></div>
+                <div class="step"><span>2</span><h4>OCR Extracts</h4><p>MedBuddy pulls medicines, dosage, and diagnoses.</p></div>
+                <div class="step"><span>3</span><h4>Organize</h4><p>Your health data is stored in one place.</p></div>
+                <div class="step"><span>4</span><h4>AI Insights</h4><p>Ask questions, get reminders, avoid conflicts.</p></div>
+            </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about" class="about-section">
+            <h2>Clearer health information</h2>
+            <p>
+                MedBuddy is an educational health decision-support project.
+                Always seek advice from a licensed doctor for diagnosis,
+                prescriptions, treatment, emergencies, or urgent symptoms.
+            </p>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <p>⚕ MedBuddy is an educational decision-support system and does not replace a qualified healthcare professional.</p>
+        </footer>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in · MedBuddy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=3">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="auth-shell">
+
+    <div class="cinematic-bg">
+        <video autoplay muted loop playsinline>
+            <source src="{{ url_for('static', filename='assets/give_videos_to_make_it_dynamic.mp4') }}" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="auth-card">
+        <div style="text-align:center;margin-bottom:12px">
+            <div style="width:56px;height:56px;background:linear-gradient(135deg,#10b981,#0f766e);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;font-size:26px;color:#fff;box-shadow:0 8px 24px rgba(16,185,129,0.4)">✚</div>
+        </div>
+        <h1 style="text-align:center">MedBuddy</h1>
+        <p class="sub" style="text-align:center">Your intelligent health companion</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for cat, msg in messages %}
+                <div class="auth-flash">{{ msg }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <div class="auth-tabs">
+            <button id="tab-login" class="active" onclick="switchTab('login')">Login</button>
+            <button id="tab-signup" onclick="switchTab('signup')">Sign up</button>
+        </div>
+
+        <form method="POST" action="{{ url_for('auth') }}">
+            <input type="hidden" name="mode" id="mode-input" value="login">
+            <input type="text" name="name" id="name-input" placeholder="Full name" style="display:none">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required minlength="4">
+            <input type="number" name="age" id="age-input" placeholder="Age" style="display:none">
+            <button type="submit" class="btn btn-primary">Continue →</button>
+        </form>
+
+        <p style="margin-top:24px;text-align:center;font-size:13px;color:rgba(226,232,240,0.5)">
+            <span class="pulse-dot"></span>Secured with encryption
+        </p>
+        <p style="margin-top:8px;text-align:center;font-size:13px">
+            <a href="{{ url_for('index') }}" style="color:var(--brand-light)">← Back to home</a>
+        </p>
+    </div>
+
+    <script>
+        function switchTab(mode) {
+            document.getElementById("mode-input").value = mode;
+            document.getElementById("tab-login").classList.toggle("active", mode === "login");
+            document.getElementById("tab-signup").classList.toggle("active", mode === "signup");
+            document.getElementById("name-input").style.display = mode === "signup" ? "block" : "none";
+            document.getElementById("age-input").style.display = mode === "signup" ? "block" : "none";
+            document.getElementById("name-input").required = mode === "signup";
+        }
+    </script>
+</body>
+</html>

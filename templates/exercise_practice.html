@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}{{ exercise.title }} · MedBuddy{% endblock %}
+{% block content %}
+
+<header class="page-head">
+    <div>
+        <h1>{{ exercise.title }}</h1>
+        <p class="page-sub">
+            {{ exercise.category }} · {{ exercise.level }} · ⏱ {{ exercise.duration }}
+            {% if pose %}<span class="diet-badge camera-badge" style="margin-left:8px">🎥 AI Coach</span>
+            {% else %}<span class="diet-badge" style="margin-left:8px;background:rgba(6,182,212,0.15);color:#67e8f9">🎥 Live Companion</span>{% endif %}
+        </p>
+    </div>
+    <a class="btn" href="{{ url_for('exercises_page') }}">← Back</a>
+</header>
+
+<div class="yoga-layout">
+
+    <!-- CAMERA PANEL -->
+    <section class="glass-card camera-panel">
+        <div class="camera-wrap">
+            <video id="cam" autoplay muted playsinline></video>
+            <canvas id="overlay"></canvas>
+            <div class="camera-loading" id="cam-loading">
+                <span class="pulse-dot"></span>Loading camera & AI model…
+            </div>
+        </div>
+        <div class="camera-controls">
+            <button class="btn primary" id="start-btn" onclick="startSession()">🎥 Start</button>
+            <button class="btn" id="test-cam-btn" onclick="testCamera()">Test Camera</button>
+            <button class="btn" id="tts-btn" onclick="toggleTTS()">🔊 Voice On</button>
+            <button class="btn" id="mic-btn" onclick="toggleMic()">🎤 Listen</button>
+        </div>
+    </section>
+
+    <!-- FEEDBACK PANEL -->
+    <section class="glass-card feedback-panel">
+        <div class="pose-header">
+            <div class="pose-timer" id="timer">
+                {% if pose %}{{ pose.hold_seconds }}s
+                {% else %}{{ exercise.duration }}
+                {% endif %}
+            </div>
+            <div class="pose-accuracy">
+                <div class="accuracy-ring">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="42" class="ring-bg"/>
+                        <circle cx="50" cy="50" r="42" class="ring-fill" id="ring"/>
+                    </svg>
+                    <div class="accuracy-num" id="accuracy">
+                        {% if generic_mode and generic_mode.mode == 'rep_counter' %}0
+                        {% else %}0%
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="muted" style="font-size:12px;text-align:center">
+                    {% if generic_mode and generic_mode.mode == 'rep_counter' %}Reps
+                    {% elif generic_mode and generic_mode.mode == 'breathing_pace' %}BPM
+                    {% elif generic_mode %}Visible
+                    {% else %}Alignment
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if pose %}
+            <h4 style="margin:16px 0 8px;color:#fff">📋 Setup Instructions</h4>
+            <ol style="padding-left:20px;line-height:1.8;font-size:13px">
+                {% for i in pose.instructions %}<li>{{ i }}</li>{% endfor %}
+            </ol>
+
+            <h4 style="margin:20px 0 8px;color:#fff">🎯 Live Feedback</h4>
+            <div id="feedback-list" class="feedback-list"></div>
+
+        {% else %}
+            <h4 style="margin:16px 0 8px;color:#fff">📖 About</h4>
+            <p style="line-height:1.6;font-size:14px">{{ exercise.description }}</p>
+
+            {% if exercise.target_conditions %}
+                <h4 style="margin:16px 0 8px;color:#fff">🎯 Helps with</h4>
+                <p style="line-height:1.6;font-size:13px">{{ exercise.target_conditions }}</p>
+            {% endif %}
+
+            <h4 style="margin:16px 0 8px;color:#fff">📋 Step-by-step</h4>
+            <div id="step-list" style="line-height:1.8;font-size:13px;white-space:pre-line">{{ exercise.instructions }}</div>
+
+            <div id="companion-status" class="feedback-item ok" style="margin-top:14px;display:none">
+                <span class="fb-icon">👁</span>
+                <span id="companion-message">Looking for you…</span>
+            </div>
+        {% endif %}
+    </section>
+</div>
+
+<div id="completion-modal" class="modal hidden">
+    <div class="modal-card" style="text-align:center">
+        <div style="font-size:60px;margin-bottom:12px">🎉</div>
+        <h2>Session Complete!</h2>
+        <p style="margin:12px 0" id="completion-summary"></p>
+        <div class="modal-actions" style="justify-content:center">
+            <a href="{{ url_for('exercises_page') }}" class="btn">More Exercises</a>
+            <button class="btn primary" onclick="location.reload()">🔁 Practice Again</button>
+        </div>
+    </div>
+</div>
+
+<p class="disclaimer"><span class="pulse-dot"></span>Camera runs 100% locally in your browser — no video is sent to any server.</p>
+
+<!-- MediaPipe -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+
+<script>
+{% if pose %}
+    // AI COACH mode
+    const MODE = "coach";
+    const POSE_DATA = {{ pose | tojson }};
+    const POSE_KEY = "{{ exercise.pose_key }}";
+    const EX_TITLE = "{{ exercise.title }}";
+{% else %}
+    // LIVE COMPANION mode
+    const MODE = "companion";
+    const GENERIC_MODE = {{ generic_mode | tojson }};
+    const EX_TITLE = "{{ exercise.title }}";
+    const EX_INSTRUCTIONS = {{ exercise.instructions | tojson }};
+    const EX_DURATION_MIN = parseInt("{{ exercise.duration }}".match(/\d+/)?.[0] || "3");
+{% endif %}
+</script>
+
+<script src="{{ url_for('static', filename='js/exercise_practice.js') }}"></script>
+
+{% endblock %}

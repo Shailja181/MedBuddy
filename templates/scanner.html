@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Scanner · MedBuddy{% endblock %}
+{% block content %}
+
+<header class="page-head">
+    <div>
+        <h1>Medical Scanner</h1>
+        <p class="page-sub">AI-powered OCR extracts medicines, dosage, and diagnosis from prescriptions</p>
+    </div>
+</header>
+
+<section class="glass-card scanner-hero">
+    <label for="scan-file" class="dropzone" id="dropzone">
+        <span class="icon-lg">📄</span>
+        <p style="font-size:16px;margin-bottom:6px"><strong>Click to upload</strong> or drag & drop</p>
+        <p style="font-size:12px;opacity:0.6">Supports JPG, PNG · Max 16MB · Processed locally with EasyOCR</p>
+        <input type="file" id="scan-file" accept="image/*,application/pdf" capture="environment">
+    </label>
+    <div id="scan-preview"></div>
+    <button class="btn primary" onclick="runScan()" style="margin-top:16px;width:100%;justify-content:center">
+        <span>🔍</span> Extract Text
+    </button>
+</section>
+
+<section id="scan-status" class="scan-status"></section>
+<section id="parsed-fields" class="card-grid"></section>
+<section id="diet-output" class="hidden" style="margin-top:24px"></section>
+
+<p class="disclaimer"><span class="pulse-dot"></span>OCR may make mistakes. Review extracted data before saving to your profile.</p>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/scanner.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Health Chart · MedBuddy{% endblock %}
+{% block content %}
+
+<header class="page-head">
+    <div>
+        <h1>Health Chart</h1>
+        <p class="page-sub">Timeline view of your complete health profile</p>
+    </div>
+    <a class="btn primary" href="/api/report/pdf" target="_blank">↓ Export PDF</a>
+</header>
+
+<section class="glass-card" style="margin-bottom:20px">
+    <h3 style="margin-bottom:16px">📊 Medicine Timeline</h3>
+    <canvas id="med-timeline" style="max-height:320px"></canvas>
+</section>
+
+<div class="card-grid">
+    <section class="glass-card">
+        <div class="section-header">
+            <div class="section-icon" style="background:rgba(245,158,11,0.15);color:#fbbf24">⚠</div>
+            <h3>Allergies</h3>
+        </div>
+        <div id="allergy-summary"></div>
+    </section>
+    <section class="glass-card">
+        <div class="section-header">
+            <div class="section-icon" style="background:rgba(99,102,241,0.15);color:#a5b4fc">📄</div>
+            <h3>Recent Reports</h3>
+        </div>
+        <div id="record-summary"></div>
+    </section>
+    <section class="glass-card">
+        <div class="section-header">
+            <div class="section-icon" style="background:rgba(239,68,68,0.15);color:#fca5a5">📌</div>
+            <h3>Health Events</h3>
+        </div>
+        <div id="event-summary"></div>
+    </section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+{% endblock %}

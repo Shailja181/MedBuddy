@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Allergies · MedBuddy{% endblock %}
+{% block content %}
+
+<header class="page-head">
+    <div>
+        <h1>Allergies</h1>
+        <p class="page-sub">Recorded allergies are used to warn you when adding conflicting medications</p>
+    </div>
+    <button class="btn primary" onclick="openAllergyModal()">+ Add Allergy</button>
+</header>
+
+<section id="allergy-list" class="card-grid"></section>
+
+<div id="a-modal" class="modal hidden">
+    <div class="modal-card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+            <div style="width:44px;height:44px;background:rgba(245,158,11,0.15);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px">⚠</div>
+            <h2 id="a-modal-title" style="margin:0">Add Allergy</h2>
+        </div>
+        <input id="a-name" placeholder="Allergen (e.g. Penicillin, Peanuts)">
+        <label>Severity
+            <select id="a-severity">
+                <option value="mild">Mild</option>
+                <option value="moderate" selected>Moderate</option>
+                <option value="severe">Severe</option>
+            </select>
+        </label>
+        <textarea id="a-notes" placeholder="Reaction details (rash, breathing difficulty, etc.)"></textarea>
+        <div class="modal-actions">
+            <button class="btn" onclick="closeAllergyModal()">Cancel</button>
+            <button class="btn primary" onclick="saveAllergy()">Save</button>
+        </div>
+    </div>
+</div>
+
+<p class="disclaimer"><span class="pulse-dot"></span>Always inform your doctor about known allergies before any new medication.</p>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/allergies.js') }}"></script>
+{% endblock %}

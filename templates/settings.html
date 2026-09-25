@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Settings · MedBuddy{% endblock %}
+{% block content %}
+
+<header class="page-head">
+    <div>
+        <h1>Settings</h1>
+        <p class="page-sub">Manage your data and preferences</p>
+    </div>
+</header>
+
+<div class="settings-grid">
+    <section class="glass-card">
+        <div class="settings-header">
+            <div class="settings-icon" style="background:rgba(16,185,129,0.15);color:var(--brand-light)">📥</div>
+            <div>
+                <h3>Export Data</h3>
+                <p class="muted">Download a complete PDF report</p>
+            </div>
+        </div>
+        <p style="margin:14px 0">Get a formatted PDF of your profile, active medicines, allergies, and vitals — ready to share with your doctor.</p>
+        <a class="btn primary" href="/api/report/pdf" target="_blank">↓ Download Health Report</a>
+    </section>
+
+    <section class="glass-card">
+        <div class="settings-header">
+            <div class="settings-icon" style="background:rgba(99,102,241,0.15);color:#a5b4fc">🤖</div>
+            <div>
+                <h3>AI Assistant</h3>
+                <p class="muted">Powered by Claude</p>
+            </div>
+        </div>
+        <p style="margin:14px 0">MedBuddy AI answers questions using your stored medicines and allergies as context. No data is shared with third parties beyond the AI provider for chat processing.</p>
+        <a class="btn" href="{{ url_for('ai_page') }}">Open Assistant →</a>
+    </section>
+
+    <section class="glass-card">
+        <div class="settings-header">
+            <div class="settings-icon" style="background:rgba(245,158,11,0.15);color:#fbbf24">ℹ</div>
+            <div>
+                <h3>About MedBuddy</h3>
+                <p class="muted">Version 1.0</p>
+            </div>
+        </div>
+        <p style="margin:14px 0">Educational health decision-support system. Built with Python, Flask, EasyOCR, and Anthropic Claude. Not a replacement for professional medical advice.</p>
+    </section>
+
+    <section class="glass-card danger-zone">
+        <div class="settings-header">
+            <div class="settings-icon" style="background:rgba(239,68,68,0.15);color:#fca5a5">⚠</div>
+            <div>
+                <h3 style="color:#fca5a5">Danger Zone</h3>
+                <p class="muted">Sign out of MedBuddy</p>
+            </div>
+        </div>
+        <p style="margin:14px 0">You'll be returned to the landing page. Your data stays safe and encrypted.</p>
+        <a class="btn danger" href="{{ url_for('logout') }}">→ Logout</a>
+    </section>
+</div>
+{% endblock %}

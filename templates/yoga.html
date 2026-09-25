@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Yoga · MedBuddy{% endblock %}
+{% block content %}
+
+<header class="page-head">
+    <div>
+        <h1>Yoga with Camera 🎥</h1>
+        <p class="page-sub">Real-time posture feedback using AI — practice safely at home</p>
+    </div>
+</header>
+
+<section class="glass-card" style="margin-bottom:20px">
+    <h3 style="margin-bottom:12px">Get Personalized Recommendations</h3>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <input id="condition-input" placeholder="e.g. back pain, stress, posture" style="flex:1;min-width:220px;padding:11px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:#e2e8f0">
+        <button class="btn primary" onclick="loadPoses()">🔍 Find Poses</button>
+        <button class="btn" onclick="loadAllPoses()">Show All</button>
+    </div>
+</section>
+
+<section id="pose-list" class="card-grid"></section>
+
+<p class="disclaimer"><span class="pulse-dot"></span>Stop immediately if you feel pain. Not for pregnancy, spinal injury, or severe hypertension without doctor approval.</p>
+
+<script>
+async function loadPoses(condition = null) {
+    const c = condition ?? document.getElementById("condition-input").value.trim();
+    const url = c ? `/api/yoga/recommendations?condition=${encodeURIComponent(c)}` : "/api/yoga/all";
+    const r = await fetch(url);
+    const list = await r.json();
+    renderPoses(list);
+}
+async function loadAllPoses() {
+    const r = await fetch("/api/yoga/all");
+    renderPoses(await r.json());
+}
+function renderPoses(list) {
+    const el = document.getElementById("pose-list");
+    if (!list.length) { el.innerHTML = `<div class="empty">No matching poses. Try a different condition.</div>`; return; }
+    el.innerHTML = list.map(p => `
+        <div class="glass-card yoga-card">
+            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px">
+                <div style="font-size:34px">🕉</div>
+                <span class="diet-badge" style="background:rgba(99,102,241,0.15);color:#a5b4fc">${p.difficulty}</span>
+            </div>
+            <h3>${p.name}</h3>
+            <p class="muted" style="font-size:13px;margin:4px 0 10px">${p.sanskrit || ''}</p>
+            <p style="font-size:13px;line-height:1.6">${(p.target_conditions || []).slice(0,3).join(' · ')}</p>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06)">
+                <span style="color:var(--brand-light);font-weight:600;font-size:13px">⏱ ${p.hold_seconds}s hold</span>
+                <a class="btn primary" href="/yoga/practice/${p.key}" style="padding:6px 14px;font-size:13px">Practice 🎥</a>
+            </div>
+        </div>`).join("");
+}
+loadAllPoses();
+</script>
+{% endblock %}

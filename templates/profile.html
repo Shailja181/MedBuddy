@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Profile · MedBuddy{% endblock %}
+{% block content %}
+
+<header class="page-head">
+    <div>
+        <h1>Profile</h1>
+        <p class="page-sub">Manage your account information</p>
+    </div>
+</header>
+
+<div style="display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start">
+    <section class="glass-card profile-avatar-card">
+        <div class="profile-avatar">{{ user.name[0]|upper }}</div>
+        <h3 style="text-align:center;margin-top:16px">{{ user.name }}</h3>
+        <p class="muted" style="text-align:center;font-size:13px">{{ user.email }}</p>
+        <div class="profile-stats">
+            <div><span class="ps-label">Age</span><span class="ps-value">{{ user.age or '—' }}</span></div>
+            <div><span class="ps-label">Since</span><span class="ps-value">{{ user.created_at.strftime('%b %Y') if user.created_at else '—' }}</span></div>
+        </div>
+    </section>
+
+    <section class="glass-card">
+        <h3 style="margin-bottom:16px">Edit Information</h3>
+        <label>Full Name</label>
+        <input id="p-name" value="{{ user.name }}">
+
+        <label style="margin-top:12px">Email <span class="muted" style="font-size:12px">(cannot be changed)</span></label>
+        <input value="{{ user.email }}" disabled>
+
+        <label style="margin-top:12px">Age</label>
+        <input id="p-age" type="number" value="{{ user.age or '' }}" placeholder="e.g. 24">
+
+        <button class="btn primary" style="margin-top:20px" onclick="saveProfile()">💾 Save Changes</button>
+    </section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+async function saveProfile() {
+    const r = await fetch("/api/profile", {
+        method: "PUT", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            name: document.getElementById("p-name").value,
+            age: parseInt(document.getElementById("p-age").value) || null
+        })
+    });
+    if (r.ok) toast("✓ Profile updated","success"); else toast("Failed to save","error");
+}
+function toast(msg, type="ok") {
+    const t = document.createElement("div");
+    t.className = `toast ${type}`; t.textContent = msg;
+    document.getElementById("toast-root").appendChild(t);
+    setTimeout(() => t.remove(), 2500);
+}
+</script>
+{% endblock %}

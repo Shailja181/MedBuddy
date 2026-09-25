@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}MedBuddy AI{% endblock %}
+{% block content %}
+
+<header class="page-head">
+    <div>
+        <h1>MedBuddy AI <span class="pulse-dot" style="margin-left:8px"></span></h1>
+        <p class="page-sub">Grounded in your health profile · Never a substitute for a doctor</p>
+    </div>
+</header>
+
+<section class="chat-window" id="chat-log">
+    <div class="bubble bot">
+        Hi! I'm MedBuddy AI. Ask me about your medicines, allergies, or general health.<br><br>
+        <strong>Try:</strong><br>
+        • "What medicines am I taking?"<br>
+        • "What are my recorded allergies?"<br>
+        • "Explain what a beta-blocker does"
+    </div>
+</section>
+
+<form class="chat-input" onsubmit="event.preventDefault(); sendMsg()">
+    <input id="msg" placeholder="Ask about your meds, allergies, or general health…" autocomplete="off">
+    <button class="btn primary" style="padding:14px 24px">Send ↗</button>
+</form>
+
+<div class="chat-suggestions">
+    <button class="suggestion" onclick="suggest('What medicines am I currently taking?')">💊 My medicines</button>
+    <button class="suggestion" onclick="suggest('What allergies do I have recorded?')">⚠ My allergies</button>
+    <button class="suggestion" onclick="suggest('Give me tips to manage stress')">😌 Stress tips</button>
+    <button class="suggestion" onclick="suggest('What is a healthy blood pressure range?')">🩺 BP range</button>
+</div>
+
+<p class="disclaimer"><span class="pulse-dot"></span>For symptoms, diagnosis, or emergencies please consult a qualified doctor.</p>
+{% endblock %}
+{% block scripts %}
+<script>
+function suggest(text) {
+    document.getElementById("msg").value = text;
+    sendMsg();
+}
+</script>
+<script src="{{ url_for('static', filename='js/ai.js') }}"></script>
+{% endblock %}

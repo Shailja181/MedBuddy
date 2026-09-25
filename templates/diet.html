@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Diet Charts · MedBuddy{% endblock %}
+{% block content %}
+
+<header class="page-head">
+    <div>
+        <h1>Diet Charts</h1>
+        <p class="page-sub">AI-personalized meal plans generated from your prescriptions</p>
+    </div>
+    <a class="btn primary" href="{{ url_for('scanner') }}">📄 Generate New</a>
+</header>
+
+<section id="diet-list"></section>
+
+<p class="disclaimer"><span class="pulse-dot"></span>Personalized diet suggestions are informational. Consult a licensed nutritionist for medical dietary needs.</p>
+
+<script>
+async function loadDiets() {
+    const r = await fetch("/api/diet");
+    const list = await r.json();
+    const el = document.getElementById("diet-list");
+    if (!list.length) {
+        el.innerHTML = `
+            <div class="empty" style="padding:80px 20px">
+                <div style="font-size:60px;margin-bottom:16px;opacity:0.4">🥗</div>
+                <p style="font-size:16px;margin-bottom:8px">No diet charts yet</p>
+                <p style="font-size:13px;margin-bottom:20px">Scan a prescription to generate your first personalized meal plan</p>
+                <a class="btn primary" href="{{ url_for('scanner') }}" style="display:inline-block">📄 Scan Prescription</a>
+            </div>`;
+        return;
+    }
+    el.innerHTML = list.map(d => `
+        <div class="glass-card diet-history-card" style="margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                <div>
+                    <h3 style="margin-bottom:4px">${d.health_condition || 'General Health'}</h3>
+                    <p class="muted" style="font-size:13px">Created ${new Date(d.created_at).toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric'})}</p>
+                </div>
+                <span class="diet-badge">Active</span>
+            </div>
+            <div class="diet-grid">
+                <div class="diet-meal"><div class="meal-icon">🌅</div><h4>Breakfast</h4><p>${d.breakfast}</p></div>
+                <div class="diet-meal"><div class="meal-icon">☀️</div><h4>Lunch</h4><p>${d.lunch}</p></div>
+                <div class="diet-meal"><div class="meal-icon">🌙</div><h4>Dinner</h4><p>${d.dinner}</p></div>
+                <div class="diet-meal"><div class="meal-icon">🍎</div><h4>Snacks</h4><p>${d.snacks}</p></div>
+                <div class="diet-meal avoid"><div class="meal-icon">🚫</div><h4>Avoid</h4><p>${d.foods_to_avoid}</p></div>
+            </div>
+        </div>`).join("");
+}
+loadDiets();
+</script>
+{% endblock %}
